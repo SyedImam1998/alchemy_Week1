@@ -1,13 +1,20 @@
 import server from "./server";
+import React from 'react';
 
-function Wallet({ address, setAddress, balance, setBalance }) {
+function Wallet({ sig,setSign, balance, setBalance,msgHash,setMsgHash,recoverBit,setrecoverBit }) {
+
+
+
   async function onChange(evt) {
-    const address = evt.target.value;
-    setAddress(address);
-    if (address) {
+    console.log("onChange called")
+    const signature = sig;
+    
+
+   
+    if (recoverBit!=="" || signature!==""|| msgHash!=="") {
       const {
         data: { balance },
-      } = await server.get(`balance/${address}`);
+      } = await server.get(`balance/${msgHash}/${signature}/${recoverBit}`);
       setBalance(balance);
     } else {
       setBalance(0);
@@ -19,8 +26,11 @@ function Wallet({ address, setAddress, balance, setBalance }) {
       <h1>Your Wallet</h1>
 
       <label>
-        Wallet Address
-        <input placeholder="Type an address, for example: 0x1" value={address} onChange={onChange}></input>
+        
+        <input placeholder="Enter Message Hash"  onChange={(e)=>setMsgHash(e.target.value)}></input>
+        <input placeholder="Enter Signature"  onChange={(e)=>setSign(e.target.value)}></input>
+        <input placeholder="Enter Recovery bit"  onChange={(e)=>setrecoverBit(e.target.value)}></input>
+        <button onClick={onChange}>Submit</button>
       </label>
 
       <div className="balance">Balance: {balance}</div>
